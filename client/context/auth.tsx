@@ -1,6 +1,16 @@
-import React, { useContext } from "react";
+'use client'
+import React, { ReactNode, useContext } from "react";
 
-const AuthContext = React.createContext({
+interface AuthContextProps {
+  login: (token: string) => void;
+  logout: () => void;
+}
+
+interface AuthProviderProps {
+  children: ReactNode;
+}
+
+const AuthContext = React.createContext<AuthContextProps>({
   login: () => {},
   logout: () => {},
 });
@@ -9,10 +19,10 @@ export const useAuth = () => {
   return useContext(AuthContext);
 };
 
-export const AuthProvide = ({ chidren }) => {
+export const AuthProvider = ({ children }: AuthProviderProps) => {
   const login = async (token: string) => {
     localStorage.setItem("auth_token", token);
-  };
+  }
 
   const logout = () => {
     localStorage.removeItem("auth_token");
@@ -23,6 +33,6 @@ export const AuthProvide = ({ chidren }) => {
     logout
   }
 
-  return <AuthContext.Provider value={value}>{chidren}</AuthContext.Provider>;
+  return <AuthContext.Provider value={value}>{children}</AuthContext.Provider>;
 
 };

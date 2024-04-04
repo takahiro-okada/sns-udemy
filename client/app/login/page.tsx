@@ -1,6 +1,7 @@
 "use client";
 import React, { useState } from "react";
 
+import { useAuth } from "@/context/auth";
 import Head from "next/head";
 import apiClient from "@/lib/apiClients";
 import { useRouter } from "next/navigation";
@@ -10,6 +11,8 @@ const login = () => {
   const [password, setPassword] = useState<string>("");
 
   const router = useRouter();
+
+  const { login } = useAuth();
 
   const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
@@ -21,7 +24,8 @@ const login = () => {
       });
 
       const token = response.data.token;
-      console.log(token);
+
+      login(token);
 
       router.push("/");
     } catch (error) {
