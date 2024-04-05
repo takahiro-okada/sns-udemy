@@ -1,6 +1,7 @@
 const express = require("express");
 const app = express();
 const authRoute = require("./routers/auth");
+const postsRoute = require("./routers/posts");
 const cors = require("cors");
 
 require("dotenv").config();
@@ -10,11 +11,7 @@ const PORT = 5001;
 app.use(cors());
 app.use(express.json());
 
-// ブラウザで5001ポートにアクセスすると、Hello Worldが表示される
-// app.get("/", (req, res) => {
-//   res.send("<h1>Hello World</h1>");
-// })
-
 app.use("/api/auth", authRoute);
+app.use("/api/posts", postsRoute);
 
 app.listen(PORT, () => console.log("Server is running on port ${PORT}"));
