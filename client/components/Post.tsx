@@ -7,7 +7,6 @@ type Props = {
 
 const Post = (props: Props) => {
   const { post } = props;
-  console.log(post);
 
   return (
     <div className="bg-white shadow-md rounded p-4 mb-4">
