@@ -6,7 +6,7 @@ import Head from "next/head";
 import apiClient from "@/lib/apiClients";
 import { useRouter } from "next/navigation";
 
-const login = () => {
+const Login = () => {
   const [email, setEmail] = useState<string>("");
   const [password, setPassword] = useState<string>("");
 
@@ -102,4 +102,4 @@ const login = () => {
   );
 };
 
-export default login;
+export default Login;

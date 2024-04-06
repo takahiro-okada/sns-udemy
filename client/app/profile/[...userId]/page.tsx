@@ -2,6 +2,8 @@ import apiClient from "@/lib/apiClients";
 import { PostType } from "@/types";
 import React from "react";
 
+import Image from "next/image";
+
 const UserProfileId = async ({ params }: { params: { userId: string } }) => {
   const userId = params.userId;
 
@@ -32,13 +34,15 @@ const UserProfileId = async ({ params }: { params: { userId: string } }) => {
         </div>
         {posts.map((post: PostType) => {
           return (
-          <div className="bg-white shadow-md rounded p-4 mb-4">
+          <div className="bg-white shadow-md rounded p-4 mb-4" key={post.id}>
             <div className="mb-4">
               <div className="flex items-center mb-2">
-                <img
+                <Image
                   className="w-10 h-10 rounded-full mr-2"
                   alt="User Avatar"
                   src={profile.profileImageUrl}
+                  width={40}
+                  height={40}
                 />
                 <div>
                   <h2 className="font-semibold text-md">

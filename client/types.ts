@@ -20,5 +20,6 @@ export interface PostType {
   content: string;
   createdAt: string;
   updatedAt: string;
+  authorId: number;
   author: UserType;
 }
