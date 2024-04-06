@@ -4,7 +4,7 @@ const isAuthenticated = require("../middlewares/isAuthenticated");
 const prisma = new PrismaClient();
 
 // 呟き投稿用API
-router.post("/post", isAuthenticated ,async (req, res) => {
+router.post("/post", isAuthenticated, async (req, res) => {
   const { content } = req.body;
 
   if (!content) {
@@ -18,7 +18,11 @@ router.post("/post", isAuthenticated ,async (req, res) => {
         authorId: req.userId,
       },
       include: {
-        author: true,
+        author: {
+          include: {
+            profile: true,
+          },
+        },
       },
     });
 
@@ -36,10 +40,36 @@ router.get("/get_latest_post", async (req, res) => {
       take: 10,
       orderBy: { createdAt: "desc" },
       include: {
-        author: true,
+        author: {
+          include: {
+            profile: true,
+          },
+        },
       },
     });
     return res.json(latestPosts);
+  } catch (error) {
+    console.error(error);
+    res.status(500).json({ message: "エラーが発生しました" });
+  }
+});
+
+// 閲覧しているユーザーの投稿内容だけを取得
+router.get("/:userId", async (req, res) => {
+  const { userId } = req.params;
+
+  try {
+    const userPosts = await prisma.post.findMany({
+      where: {
+        authorId: parseInt(userId),
+      },
+      orderBy: { createdAt: "desc" },
+      include: {
+        author: true,
+      },
+    });
+    
+    return res.status(200).json(userPosts);
   } catch (error) {
     console.error(error);
     res.status(500).json({ message: "エラーが発生しました" });
