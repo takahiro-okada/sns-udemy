@@ -1,8 +1,11 @@
-'use client'
+"use client";
 import React, { ReactNode, useContext, useEffect } from "react";
 import apiClient from "@/lib/apiClients";
 
+import { useState } from "react";
+
 interface AuthContextProps {
+  user: null | { id: number; email: string; username: string };
   login: (token: string) => void;
   logout: () => void;
 }
@@ -12,6 +15,7 @@ interface AuthProviderProps {
 }
 
 const AuthContext = React.createContext<AuthContextProps>({
+  user: null,
   login: () => {},
   logout: () => {},
 });
@@ -21,25 +25,56 @@ export const useAuth = () => {
 };
 
 export const AuthProvider = ({ children }: AuthProviderProps) => {
-  
-  useEffect(()=> {
+  const [user, setUser] = useState<null | {
+    id: number;
+    email: string;
+    username: string;
+  }>(null);
+
+  useEffect(() => {
     const token = localStorage.getItem("auth_token");
-    apiClient.defaults.headers["Authorization"] = `Bearer ${token}`;
-  }, [])
-  
+    if (token) {
+      apiClient.defaults.headers["Authorization"] = `Bearer ${token}`;
+
+      apiClient
+        .get("/users/find")
+        .then((res) => {
+          console.log(res.data);
+          setUser(res.data.user);
+        })
+        .catch((err) => {
+          console.log(err);
+        });
+    }
+  }, []);
+
   const login = async (token: string) => {
     localStorage.setItem("auth_token", token);
-  }
+    apiClient.defaults.headers["Authorization"] = `Bearer ${token}`;
+
+    try {
+      apiClient
+        .get("/users/find")
+        .then((res) => {
+          console.log(res.data);
+          setUser(res.data.user);
+        })
+    } catch (err) {
+      console.log(err);
+    }
+  };
 
   const logout = () => {
     localStorage.removeItem("auth_token");
-  }
+    delete apiClient.defaults.headers["Authorization"];
+    setUser(null);
+  };
 
   const value = {
+    user,
     login,
-    logout
-  }
+    logout,
+  };
 
   return <AuthContext.Provider value={value}>{children}</AuthContext.Provider>;
-
 };
