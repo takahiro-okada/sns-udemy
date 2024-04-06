@@ -12,7 +12,6 @@ const UserProfileId = async ({ params }: { params: { userId: string } }) => {
 
   const postResponse = await apiClient.get(`posts/${userId}`);
   const posts = postResponse.data;
-  console.log(posts);
 
   return (
     <div className="container mx-auto px-4 py-8">
